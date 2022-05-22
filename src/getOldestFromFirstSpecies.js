@@ -8,7 +8,7 @@ function getOldestFromFirstSpecies(id) {
     .residents.reduce((acc, curr) => {
       if (acc.age > curr.age) return acc;
       return curr;
-    }, []);
+    });
   return Object.values(maisVelho);
 }
 
