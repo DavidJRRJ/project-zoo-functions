@@ -6,11 +6,8 @@ const data = require('../data/zoo_data');
   return elemento.availability;
 });  */
 
-/* function getSchedule(scheduleTarget) {
-  return data.species.map((elemento) => {
-    return elemento.name;
-    return elemento.availability;
-  });
-} */
+function getSchedule(scheduleTarget) {
+
+}
 
 module.exports = getSchedule;
