@@ -1,74 +1,54 @@
 const data = require('../data/zoo_data');
 
-const expected = {
-  Tuesday: {
-    officeHour: 'Open from 8am until 6pm',
-    exhibition: [
-      'lions',
-      'tigers',
-      'bears',
-      'penguins',
-      'elephants',
-      'giraffes',
-    ],
-  },
-  Wednesday: {
-    officeHour: 'Open from 8am until 6pm',
-    exhibition: ['tigers', 'bears', 'penguins', 'otters', 'frogs', 'giraffes'],
-  },
-  Thursday: {
-    officeHour: 'Open from 10am until 8pm',
-    exhibition: ['lions', 'otters', 'frogs', 'snakes', 'giraffes'],
-  },
-  Friday: {
-    officeHour: 'Open from 10am until 8pm',
-    exhibition: [
-      'tigers',
-      'otters',
-      'frogs',
-      'snakes',
-      'elephants',
-      'giraffes',
-    ],
-  },
-  Saturday: {
-    officeHour: 'Open from 8am until 10pm',
-    exhibition: [
-      'lions',
-      'tigers',
-      'bears',
-      'penguins',
-      'otters',
-      'frogs',
-      'snakes',
-      'elephants',
-    ],
-  },
-  Sunday: {
-    officeHour: 'Open from 8am until 8pm',
-    exhibition: ['lions', 'bears', 'penguins', 'snakes', 'elephants'],
-  },
-  Monday: { officeHour: 'CLOSED', exhibition: 'The zoo will be closed!' },
-};
 const monday = {
   Monday: { officeHour: 'CLOSED', exhibition: 'The zoo will be closed!' },
 };
 const animais = (animal) => data.species.some(({ name }) => name === animal);
 const pesqId = (animal) =>
   data.species.find(({ name }) => name === animal).availability;
-const pesqDia = (dia) => Object.keys(expected).some((obj) => obj === dia);
-const objetoDia = (dia) => {
-  const obj = {
-    [dia]: expected[dia],
+const pesqDia = (dia) => Object.keys(data.hours).some((obj) => obj === dia);
+const disponiveis = (dia) =>
+  data.species
+    .filter(({ availability }) => availability.includes(dia))
+    .map(({ name }) => name);
+const objetoDisp = (dia) => {
+  const objeto = {
+    [dia]: {
+      officeHour: `Open from ${data.hours[dia].open}am until ${data.hours[dia].close}pm`,
+      exhibition: disponiveis(dia),
+    },
   };
-  return obj;
+  if (dia === 'Monday') return monday;
+  return objeto;
+};
+
+const tudo = () => {
+  const arr = [
+    'Friday',
+    'Monday',
+    'Saturday',
+    'Sunday',
+    'Thursday',
+    'Tuesday',
+    'Wednesday',
+    'Monday',
+  ];
+  let dias = {};
+  arr.forEach((element) => {
+    dias = {
+      ...dias,
+      ...objetoDisp(element),
+    };
+  });
+  return dias;
 };
 
 function getSchedule(scheduleTarget) {
   if (animais(scheduleTarget) === true) return pesqId(scheduleTarget);
   if (scheduleTarget === 'Monday') return monday;
-  if (pesqDia(scheduleTarget) === true) return objetoDia(scheduleTarget);
-  if (animais(scheduleTarget) === false) return expected;
+  if (pesqDia(scheduleTarget) === true) return objetoDisp(scheduleTarget);
+  return tudo();
 }
 
+console.log(getSchedule('teste'));
 module.exports = getSchedule;
